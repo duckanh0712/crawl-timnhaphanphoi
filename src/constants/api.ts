@@ -1,0 +1,1 @@
+export const TIMNHAPHANPHOI_API = process.env.TIMNHAPHANPHOI_API;
