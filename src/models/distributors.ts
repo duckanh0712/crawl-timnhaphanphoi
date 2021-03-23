@@ -8,10 +8,26 @@ const DistributorSchema: Schema = new mongoose.Schema(
             required: [ true, 'ID is required!']
         },
         title: String,
-        contact_name: String,
         category: String,
         priority_area: String,
         phone: String,
-        image: Array
+        images: {
+            type: Array,
+            default: []
+        },
+        content: String,
+        links: {
+            type: Array,
+            default: []
+        },
+        emails: {
+            type: Array,
+            default: []
+        }
+      
+    },{
+        timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
     }
 );
+
+export default mongoose.model('distributors', DistributorSchema)

@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { TIMNHAPHANPHOI_API } from '../../constants/api';
-
+import saveDitributor from './convert';
 
 const getConent = (url: string) => {
     return new Promise(async (resolve, reject) => {
@@ -42,7 +42,8 @@ const getConent = (url: string) => {
 
             });
             await browser.close();
-            console.log('distributor', distributor);
+            await saveDitributor(distributor);
+            // console.log('distributor', distributor);
             resolve(1);
         }
         catch (e) {
