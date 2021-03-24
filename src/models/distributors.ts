@@ -8,7 +8,10 @@ const DistributorSchema: Schema = new mongoose.Schema(
             required: [ true, 'ID is required!']
         },
         title: String,
-        category: String,
+        category: {
+            category_name: String,
+            cate_slug: String
+        },
         priority_area: String,
         phone: String,
         images: {
@@ -23,7 +26,9 @@ const DistributorSchema: Schema = new mongoose.Schema(
         emails: {
             type: Array,
             default: []
-        }
+        },
+        industry: String,
+        contact_name: String
       
     },{
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

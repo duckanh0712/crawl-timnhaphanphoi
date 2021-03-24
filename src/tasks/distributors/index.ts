@@ -2,12 +2,12 @@ import puppeteer from 'puppeteer';
 import { TIMNHAPHANPHOI_API } from '../../constants/api';
 import saveDitributor from './convert';
 
-const getConent = (url: string) => {
+const getConent = (url: string, category: string) => {
     return new Promise(async (resolve, reject) => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         try {
-            console.log(`${TIMNHAPHANPHOI_API}${url}`);
+            console.log(`link: ${TIMNHAPHANPHOI_API}${url}`);
 
             await page.goto(`${TIMNHAPHANPHOI_API}${url}`);
             const distributor = await page.evaluate(() => {
@@ -42,11 +42,13 @@ const getConent = (url: string) => {
 
             });
             await browser.close();
-            await saveDitributor(distributor);
+            await saveDitributor(distributor, category);
             // console.log('distributor', distributor);
             resolve(1);
         }
         catch (e) {
+            console.log(e);
+
             reject(e)
         }
 
@@ -54,46 +56,44 @@ const getConent = (url: string) => {
 }
 
 export const getUrlDistributors = async (url) => {
-    return new Promise(async (resolve, reject) => {
-        let nextPage = '';
-        let pageNumber = 1;
-        let distributors = ['1'];
-        while (distributors.length > 0)
-            try {
-                const browser = await puppeteer.launch();
-                const page = await browser.newPage();
-                await page.goto(`${TIMNHAPHANPHOI_API}${url}${nextPage}`);
-                distributors = await page.evaluate(() => {
-                    // const pageUrl = document.querySelector('.pagination > li.active + li > a').getAttribute("href");
-                    let items: any = document.querySelectorAll(".rnvip5 , .rnvip4, .rnvip3, .rnvip2, .rnvip1, .rnvip0 ");
-                    let links = [];
-                    items.forEach(item => {
-                        let url = item.getAttribute("href")
-                        links.push(url);
-                    });
-                    return links;
+
+    let nextPage = '';
+    let pageNumber = 1;
+    let distributors = ['1'];
+
+    while (distributors.length > 0)
+        try {
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.goto(`${TIMNHAPHANPHOI_API}${url}${nextPage}`);
+            console.log('goto:', `${TIMNHAPHANPHOI_API}${url}${nextPage}`);
+
+            distributors = await page.evaluate(() => {
+                // const pageUrl = document.querySelector('.pagination > li.active + li > a').getAttribute("href");
+                let items: any = document.querySelectorAll(".rnvip5 , .rnvip4, .rnvip3, .rnvip2, .rnvip1, .rnvip0 ");
+                let links = [];
+                items.forEach(item => {
+                    let url = item.getAttribute("href")
+                    links.push(url);
                 });
-                await browser.close();
-                console.log('distributor', distributors);
-                console.log('nextPage', nextPage);
-                pageNumber += 1;
-                nextPage = `?page=${pageNumber}`
-                for (let i = 0; i < distributors.length; i++) {
+                return links;
+            });
+            await browser.close();
+            console.log('distributor', distributors);
+            console.log('nextPage', nextPage);
+            pageNumber++;
+            nextPage = `?page=${pageNumber}`
+            for (let i = 0; i < distributors.length; i++) {
 
-                    await getConent(distributors[i]);
-                }
-                resolve(1);
-
-            } catch (e) {
-                reject(e)
+                await getConent(distributors[i], url);
             }
 
-    });
+        } catch (e) {
+            console.log(e);
+
+        }
 
 }
-
-
-
 
 export const getUrlCategories = async () => {
     return new Promise(async (resolve, reject) => {
@@ -104,7 +104,7 @@ export const getUrlCategories = async () => {
             const urls = await page.evaluate(() => {
                 let items: any = document.querySelectorAll(".menuSub > li > a");
                 let links = [];
-                for (let i = 0; i < 1; i++) {
+                for (let i = 0; i < 13; i++) {
                     let url = items[i].getAttribute("href")
                     links.push(url);
                 }
@@ -115,7 +115,6 @@ export const getUrlCategories = async () => {
             console.log(urls);
             for (let i = 0; i < urls.length; i++) {
                 console.log(urls[i]);
-
                 await getUrlDistributors(urls[i]);
             }
 

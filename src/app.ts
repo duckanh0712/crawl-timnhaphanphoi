@@ -25,8 +25,8 @@ mongoose.connection.once('open', () => {
 import { getUrlCategories } from './tasks/distributors';
 getUrlCategories();
 
-// import { filterUrl} from './tasks/featRegex';
-// filterUrl();
+// import { aaa} from './tasks/featRegex';
+// aaa();
 
 
 
