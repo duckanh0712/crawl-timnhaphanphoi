@@ -22,11 +22,18 @@ mongoose.connection.once('open', () => {
 })
 
 
-import { getUrlCategories } from './tasks/distributors';
-getUrlCategories();
+// import { getUrlCategories } from './tasks/distributors';
+// try{
+//     getUrlCategories();
+// }catch(e){
+//     console.log(e);
+    
+// }
+import thitruonsi from './tasks/wholesale/index';
+thitruonsi();
 
-// import { aaa} from './tasks/featRegex';
-// aaa();
+  
+
 
 
 

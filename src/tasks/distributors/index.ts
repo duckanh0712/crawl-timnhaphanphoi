@@ -96,34 +96,33 @@ export const getUrlDistributors = async (url) => {
 }
 
 export const getUrlCategories = async () => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const browser = await puppeteer.launch();
-            const page = await browser.newPage();
-            await page.goto(TIMNHAPHANPHOI_API);
-            const urls = await page.evaluate(() => {
-                let items: any = document.querySelectorAll(".menuSub > li > a");
-                let links = [];
-                for (let i = 0; i < 13; i++) {
-                    let url = items[i].getAttribute("href")
-                    links.push(url);
-                }
-                return links;
-
-            });
-            await browser.close();
-            console.log(urls);
-            for (let i = 0; i < urls.length; i++) {
-                console.log(urls[i]);
-                await getUrlDistributors(urls[i]);
+    try {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(TIMNHAPHANPHOI_API);
+        const urls = await page.evaluate(() => {
+            let items: any = document.querySelectorAll(".menuSub > li > a");
+            let links = [];
+            for (let i = 0; i < 13; i++) {
+                let url = items[i].getAttribute("href")
+                links.push(url);
             }
+            return links;
 
-            resolve(1)
-        } catch (e) {
-            reject(e);
-
+        });
+        await browser.close();
+        console.log(urls);
+        for (let i = 0; i < urls.length; i++) {
+            console.log(urls[i]);
+            await getUrlDistributors(urls[i]);
         }
-    });
+
+
+    } catch (e) {
+        console.log(e);
+
+
+    }
 
 }
 
