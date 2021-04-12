@@ -20,7 +20,7 @@ const getShop = async (browser, shopUrls) => {
                 await page.goto(shopUrl);
 
                 const data = await page.evaluate(() => {
-                    
+
                     const shopName = document.querySelector(".shop-intro__name").textContent;
                     const shopAvatar = document.querySelector(".shop-intro__avatar").getAttribute('src');
                     const shop = {
@@ -30,25 +30,22 @@ const getShop = async (browser, shopUrls) => {
                     return shop;
 
                 });
-                // const form = await page.$('.btn-outline-link');
-                // await form.evaluate(form => form.click());
-                await page.$$eval('.btn-outline-link', elements => elements[1].click());
-                // await page.waitForSelector('.modal-body', {
-                //     visible: true,
-                //   });
-                // const phoneNumber: any = document.querySelectorAll;("textarea");
-                // let images = [];
-                // phoneNumber.forEach(item => {
-                //     images.push(item.getAttribute('src'));
-                // });
-                // console.log('phoneNumber', images);
+                await page.$$eval('.btn-outline-link', elements => elements[2].click());
+                await page.waitForSelector('textarea', { visible: true });
+                const getPhoneNumber = await page.evaluate(() => {
+
+                    const phoneNumber = document.querySelector('textarea').textContent;
+                    return phoneNumber
+                });
+
+                console.log('phoneNumber', getPhoneNumber);
                 console.log('data', data);
 
             } catch (error) {
                 console.log(error);
 
             }
-            await sleep(1500);
+            // await sleep(1500);
 
 
         }
@@ -60,7 +57,7 @@ const getShop = async (browser, shopUrls) => {
 
 
 export default () => {
-    const searchUrl = `https://thitruongsi.com/shop/search?keyword=%C3%A1o%20ba%20l%E1%BB%97%20nam`;
+    const searchUrl = `https://thitruongsi.com/shop/search?keyword=bop%20da%20nam%20sanzhou%20tgs4536%20quang%20chau%20voi%20chat%20da`;
     console.log(searchUrl);
     return new Promise(async (resolve, reject) => {
 
@@ -76,7 +73,7 @@ export default () => {
             });
             const page = await browser.newPage();
             await page.goto(searchUrl);
-           
+
 
             const data = await page.evaluate(() => {
                 const shopsLink = document.querySelectorAll('.shop-item > a');
@@ -92,7 +89,7 @@ export default () => {
             await loginTTS(page); console.log(121213132);
             await page.waitForNavigation({
                 waitUntil: 'networkidle0',
-              });
+            });
             await getShop(browser, data)
             resolve(1)
 
