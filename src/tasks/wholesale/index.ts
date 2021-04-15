@@ -20,26 +20,115 @@ const getShop = async (browser, shopUrls) => {
                 await page.goto(shopUrl);
 
                 const data = await page.evaluate(() => {
-
+                    const profileQuerySelector = `.rounded.bg-white mb-4 > .p-2`;
                     const shopName = document.querySelector(".shop-intro__name").textContent;
                     const shopAvatar = document.querySelector(".shop-intro__avatar").getAttribute('src');
+                    const shopDescription = document.querySelectorAll(".jsx-898174646 > div  > p ");
+                    const shopStatistic = document.querySelectorAll(".jsx-2057245010.mr-4 > .jsx-2057245010");
+                    const shopMetaNames = document.querySelectorAll(".shop-meta__name");
+                    const shopMetaValues = document.querySelectorAll(".shop-meta__value"); 
+                    const operationTimes = document.querySelectorAll(".css-1t42tx8 > div > span");
+                    let operationTime: number = Number(operationTimes[1].textContent);
+                    if(operationTimes.length >= 3){
+                        operationTime = Number(operationTimes[2].textContent);
+                    }
+                    let businessType: string, imageCoverUrl: string;
+
+                    let arr1 = [] , arr2 = [];
+                    shopMetaNames.forEach(item => {
+                        arr1.push(item.textContent);
+                    });
+                    shopMetaValues.forEach(item => {
+                        arr2.push(item.textContent);
+                    });
+                    
+
+                    let companyName: string, businessModel: string, taxCode: string;
+                    let contacName: string, area: string, industry: string, address: string;
+                    let shopMetaNameVariables: string [] = [];
+                    for(let i = 0; i < shopMetaNames.length; i++){
+                        
+                        if(shopMetaNames[i].textContent == `Tên doanh nghiệp:`){
+                            companyName = shopMetaValues[i].textContent
+                        }
+                        if(shopMetaNames[i].textContent == `Mô hình kinh doanh`){
+                            businessModel = shopMetaValues[i].textContent;
+                        } 
+                        if(shopMetaNames[i].textContent == `Mã số thuế`){
+                            taxCode = shopMetaValues[i].textContent;
+                        } 
+                        if(shopMetaNames[i].textContent ==  `Đại diện`){
+                            contacName = shopMetaValues[i].textContent;
+                        } 
+                        if(shopMetaNames[i].textContent == `Thị trường`){
+                            area = shopMetaValues[i].textContent;
+                        } 
+                        if(shopMetaNames[i].textContent == `Ngành hàng`){
+                            industry = shopMetaValues[i].textContent;
+                        } 
+                        if(shopMetaNames[i].textContent == `Địa chỉ`){
+                            address = shopMetaValues[i].textContent;
+                        }
+                   
+                    }
+                    try {
+                  
+                        imageCoverUrl = document.querySelector(".css-7b2ct2 > img").getAttribute("src");
+
+                    } catch (e) {
+
+                        imageCoverUrl = null;
+                    }
+                    try {
+                   
+                        businessType = document.querySelector(".jsx-2057245010.shop-intro .p-2 .jsx-2057245010 > img").getAttribute('src');
+
+                    } catch (e) {
+
+                        businessType = null;
+                    }
+
+                    const shopViews = Number(shopStatistic[0].textContent);
+                    const shopfollowers = Number(shopStatistic[2].textContent);
+                    const products = Number(shopStatistic[4].textContent);
+                    let description = '';
+                    shopDescription.forEach(item => {
+                        description = `${description}${item.textContent}\n`;
+                    });
+
                     const shop = {
+                        imageCoverUrl,
                         shopName,
-                        shopAvatar
+                        shopAvatar,
+                        description,
+                        shopViews,
+                        shopfollowers,
+                        products,
+                        operationTime,
+                        companyName,
+                        businessModel,
+                        taxCode,
+                        contacName,
+                        area,
+                        industry,
+                        address
+                        
+
                     }
                     return shop;
 
                 });
-                await page.$$eval('.btn-outline-link', elements => elements[2].click());
-                await page.waitForSelector('textarea', { visible: true });
-                const getPhoneNumber = await page.evaluate(() => {
+                // await page.$$eval('.btn-outline-link', elements => elements[2].click());
+                // await page.waitForSelector('textarea', { visible: true });
+                // const getPhoneNumber = await page.evaluate(() => {
 
-                    const phoneNumber = document.querySelector('textarea').textContent;
-                    return phoneNumber
-                });
+                //     const phoneNumber = document.querySelector('textarea').textContent;
+                //     return phoneNumber
+                // });
 
-                console.log('phoneNumber', getPhoneNumber);
+                // console.log('phoneNumber', getPhoneNumber);
                 console.log('data', data);
+
 
             } catch (error) {
                 console.log(error);
@@ -49,6 +138,7 @@ const getShop = async (browser, shopUrls) => {
 
 
         }
+        // page.close();
     } catch (e) {
         console.log(e);
 
@@ -57,7 +147,7 @@ const getShop = async (browser, shopUrls) => {
 
 
 export default () => {
-    const searchUrl = `https://thitruongsi.com/shop/search?keyword=bop%20da%20nam%20sanzhou%20tgs4536%20quang%20chau%20voi%20chat%20da`;
+    const searchUrl = `https://thitruongsi.com/shop/search?keyword=vo%20soc%20cao%20co%20nam%20nu`;
     console.log(searchUrl);
     return new Promise(async (resolve, reject) => {
 
@@ -76,17 +166,17 @@ export default () => {
 
 
             const data = await page.evaluate(() => {
-                const shopsLink = document.querySelectorAll('.shop-item > a');
                 let shopsLinks = [];
-                shopsLink.forEach(item => {
-                    shopsLinks.push(item.getAttribute("href"));
-                });
-                // shopsLinks.push(`/shop/jbstore-5d5d393a77f4d`);
+                // const shopsLink = document.querySelectorAll('.shop-item > a');
+                // shopsLink.forEach(item => {
+                //     shopsLinks.push(item.getAttribute("href"));
+                // });
+                shopsLinks.push(`/shop/nice-house`);
                 return shopsLinks;
 
             });
             console.log(data);
-            await loginTTS(page); console.log(121213132);
+            await loginTTS(page);
             await page.waitForNavigation({
                 waitUntil: 'networkidle0',
             });
