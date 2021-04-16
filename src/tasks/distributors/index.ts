@@ -2,9 +2,9 @@ import puppeteer from 'puppeteer';
 import { TIMNHAPHANPHOI_API } from '../../constants/api';
 import saveDitributor from './convert';
 
-const getConent = (url: string, category: string) => {
+const getConent = (url: string, category: string, browser) => {
     return new Promise(async (resolve, reject) => {
-        const browser = await puppeteer.launch();
+        
         const page = await browser.newPage();
         try {
             console.log(`link: ${TIMNHAPHANPHOI_API}${url}`);
@@ -55,7 +55,7 @@ const getConent = (url: string, category: string) => {
     });
 }
 
-export const getUrlDistributors = async (url) => {
+export const getUrlDistributors = async (url,browser) => {
 
     let nextPage = '';
     let pageNumber = 1;
@@ -63,7 +63,7 @@ export const getUrlDistributors = async (url) => {
 
     while (distributors.length > 0)
         try {
-            const browser = await puppeteer.launch();
+         
             const page = await browser.newPage();
             await page.goto(`${TIMNHAPHANPHOI_API}${url}${nextPage}`);
             console.log('goto:', `${TIMNHAPHANPHOI_API}${url}${nextPage}`);
@@ -85,7 +85,7 @@ export const getUrlDistributors = async (url) => {
             nextPage = `?page=${pageNumber}`
             for (let i = 0; i < distributors.length; i++) {
 
-                await getConent(distributors[i], url);
+                await getConent(distributors[i], url,browser);
             }
 
         } catch (e) {
@@ -97,7 +97,10 @@ export const getUrlDistributors = async (url) => {
 
 export const getUrlCategories = async () => {
     try {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: false,
+
+        });
         const page = await browser.newPage();
         await page.goto(TIMNHAPHANPHOI_API);
         const urls = await page.evaluate(() => {
@@ -110,13 +113,13 @@ export const getUrlCategories = async () => {
             return links;
 
         });
-        await browser.close();
+       
         console.log(urls);
         for (let i = 0; i < urls.length; i++) {
             console.log(urls[i]);
-            await getUrlDistributors(urls[i]);
+            await getUrlDistributors(urls[i],browser);
         }
-
+        await browser.close();
 
     } catch (e) {
         console.log(e);
