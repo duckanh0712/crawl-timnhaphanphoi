@@ -10,5 +10,6 @@ export enum Platforms {
     tiki = 'tk',  // TIKI
     lazada = 'lzd', //LAZADA
     sendo = 'sd', // SENDO
-    npp = 'npp' // tim nha phan phoi
+    npp = 'npp', // tim nha phan phoi
+    tts = 'tts'
 }

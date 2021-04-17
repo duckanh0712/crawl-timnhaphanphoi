@@ -3,8 +3,13 @@ import mongoose from './index';
 
 const WholesaleSchema: Schema = new mongoose.Schema(
     {
-        
+        _id: {
+            
+            type: String,
+            required: [true, 'Id required!']
+        },
         name: String,
+        address_detail: String,
         email: String,
         detail_address: String,
         phone_number: String,

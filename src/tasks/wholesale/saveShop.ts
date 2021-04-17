@@ -1,16 +1,17 @@
 import WholesaleModel from '../../models/wholesale';
 import getLocationTTS from '../../untils/getLocationTTS';
 import filterEmails from '../../untils/emailFilter';
-
+import { Platforms } from '../../constants/common';
 export const createShop = async (data,phone) => {
     try {
         const address = await getLocationTTS(data.addressString);
         const emails = await filterEmails(data.shopDescription);
 
         const shop = {
+            _id: `${Platforms.tts}.${phone}`,
             name: data.shopName,
             emails: emails,
-            address_detail: data.addressDetail,
+            address_detail: !data.addressDetail ? null : data.addressDetail,
             phone_number: phone,
             contact_name: data.contactName,
             avatar_url: data.shopAvatar,
@@ -29,7 +30,6 @@ export const createShop = async (data,phone) => {
             address: address
         }
         console.log(shop);
-        
         await WholesaleModel.create(shop);
     } catch (e) {
         console.log(e);

@@ -4,6 +4,8 @@ import { CHOZOI_API } from '../constants/api';
 import axios from 'axios';
 export default async (place) => {
     try {
+        console.log(place);
+        
         let province_id: number;
         let district_id: number;
         let ward_id: Number;
@@ -37,7 +39,7 @@ export default async (place) => {
             },
             address_detail: address_detail
         }
-        console.log(address);
+        // console.log(address);
         
         return address;
 

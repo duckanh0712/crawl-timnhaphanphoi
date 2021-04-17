@@ -1,7 +1,8 @@
 import { createShop } from './saveShop';
 import puppeteer from 'puppeteer';
 import { TTS_API } from '../../constants/api';
-
+import { Platforms } from '../../constants/common';
+import WholesaleModel from '../../models/wholesale';
 const loginTTS = async (page) => {
     const form = await page.$('.align-self-center > .as-action');
     await form.evaluate(form => form.click());
@@ -31,6 +32,7 @@ const getShop = async (browser, shopUrls) => {
                     const operationTimes = document.querySelectorAll(".css-1t42tx8 > div > span");
                     const shopImages = document.querySelectorAll(".image-lightbox > img");
                     const addressString = document.querySelector(".text-truntcate.text-muted").textContent;
+                    const productsShow = document.querySelector(".border-bottom.border-dark").getAttribute("href");
                     let shopDescriptions: string, businessType: string, imageCoverUrl: string;
                     try {
 
@@ -122,8 +124,8 @@ const getShop = async (browser, shopUrls) => {
                         addressDetail,
                         images,
                         shopDescriptions,
-                        addressString
-
+                        addressString,
+                        productsShow
 
                     }
                     return shop;
@@ -134,10 +136,22 @@ const getShop = async (browser, shopUrls) => {
                 const getPhoneNumber = await page.evaluate(() => {
 
                     const phoneNumber = document.querySelector('textarea').textContent;
+
                     return phoneNumber
                 });
+                const shop = await WholesaleModel.findById(`${Platforms.tts}.${getPhoneNumber}`)
+                // if (!shop) {
+                    // await createShop(data, getPhoneNumber);
+                    const productUrl = `${TTS_API}${data.productsShow}`
+                    console.log(data.productsShow);
+                    await page.goto(productUrl);
+                    
 
-                await createShop(data,getPhoneNumber);
+
+
+                // } else {
+                    // continue;
+                // }
 
             } catch (error) {
                 console.log(error);
@@ -175,10 +189,10 @@ export default () => {
 
             const data = await page.evaluate(() => {
                 let shopsLinks = [];
-                const shopsLink = document.querySelectorAll('.shop-item > a');
-                shopsLink.forEach(item => {
-                    shopsLinks.push(item.getAttribute("href"));
-                });
+                // const shopsLink = document.querySelectorAll('.shop-item > a');
+                // shopsLink.forEach(item => {
+                //     shopsLinks.push(item.getAttribute("href"));
+                // });
                 shopsLinks.push(`/shop/nice-house`);
                 return shopsLinks;
 
