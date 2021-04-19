@@ -31,7 +31,8 @@ mongoose.connection.once('open', () => {
 // }
 import thitruonsi from './tasks/wholesale/index';
 thitruonsi();
-
+// import thitruonsi from './tasks/wholesale/tss';
+// thitruonsi();
   
 
 

@@ -1,8 +1,9 @@
-import { createShop } from './saveShop';
 import puppeteer from 'puppeteer';
 import { TTS_API } from '../../constants/api';
 import { Platforms } from '../../constants/common';
 import WholesaleModel from '../../models/wholesale';
+import { getUrlProduct } from '../../tasks/wholesale/saveProduct';
+
 const loginTTS = async (page) => {
     const form = await page.$('.align-self-center > .as-action');
     await form.evaluate(form => form.click());
@@ -20,7 +21,6 @@ const getShop = async (browser, shopUrls) => {
             try {
                 const shopUrl = `${TTS_API}${shopUrls[i]}`
                 await page.goto(shopUrl);
-
                 const data = await page.evaluate(() => {
 
                     const shopName = document.querySelector(".shop-intro__name").textContent;
@@ -139,18 +139,16 @@ const getShop = async (browser, shopUrls) => {
 
                     return phoneNumber
                 });
-                const shop = await WholesaleModel.findById(`${Platforms.tts}.${getPhoneNumber}`)
+                const shop = await WholesaleModel.findById(`${Platforms.tts}.${getPhoneNumber}`);
                 // if (!shop) {
-                    // await createShop(data, getPhoneNumber);
-                    const productUrl = `${TTS_API}${data.productsShow}`
-                    console.log(data.productsShow);
-                    await page.goto(productUrl);
-                    
+                // await createShop(data, getPhoneNumber);
+                const productUrl = `${TTS_API}${data.productsShow}`
+                await getUrlProduct(page, productUrl,getPhoneNumber)
 
 
 
                 // } else {
-                    // continue;
+                // continue;
                 // }
 
             } catch (error) {
@@ -193,7 +191,7 @@ export default () => {
                 // shopsLink.forEach(item => {
                 //     shopsLinks.push(item.getAttribute("href"));
                 // });
-                shopsLinks.push(`/shop/nice-house`);
+                shopsLinks.push(`/shop/xuong-chuyen-si-thoi-trang-thien-huu`);
                 return shopsLinks;
 
             });
