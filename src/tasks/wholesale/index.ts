@@ -3,7 +3,7 @@ import { TTS_API } from '../../constants/api';
 import { Platforms } from '../../constants/common';
 import WholesaleModel from '../../models/wholesale';
 import { getUrlProduct } from '../../tasks/wholesale/saveProduct';
-
+import { createShop } from '../wholesale/saveShop';
 const loginTTS = async (page) => {
     const form = await page.$('.align-self-center > .as-action');
     await form.evaluate(form => form.click());
@@ -140,16 +140,15 @@ const getShop = async (browser, shopUrls) => {
                     return phoneNumber
                 });
                 const shop = await WholesaleModel.findById(`${Platforms.tts}.${getPhoneNumber}`);
-                // if (!shop) {
-                // await createShop(data, getPhoneNumber);
-                const productUrl = `${TTS_API}${data.productsShow}`
+                if (!shop) {
+                await createShop(data, getPhoneNumber);
+                const productUrl = `${TTS_API}${data.productsShow}`;
+
                 await getUrlProduct(page, productUrl,getPhoneNumber)
 
-
-
-                // } else {
-                // continue;
-                // }
+                } else {
+                continue;
+                }
 
             } catch (error) {
                 console.log(error);

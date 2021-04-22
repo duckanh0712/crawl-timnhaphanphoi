@@ -29,11 +29,10 @@ mongoose.connection.once('open', () => {
 //     console.log(e);
     
 // }
-import thitruonsi from './tasks/wholesale/index';
-thitruonsi();
-// import thitruonsi from './tasks/wholesale/tss';
+// import thitruonsi from './tasks/wholesale/index';
 // thitruonsi();
-  
+import {getCategory} from './untils/getCategory';
+getCategory(`Giày Dép - Túi Xách`);
 
 
 

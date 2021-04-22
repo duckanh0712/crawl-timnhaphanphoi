@@ -1,10 +1,10 @@
 import { TTS_API } from '../../constants/api';
 import WholesaleProductModel from '../../models/wholeesaleProduct';
 import { Platforms } from '../../constants/common';
-import wholeesaleProduct from '../../models/wholeesaleProduct';
+import  { getCategory } from '../../untils/getCategory';
+ 
 
-
-const saveProduct = (page, data, shopId) => {
+const saveProduct = (page, data, shopId, cateName) => {
     return new Promise(async (resolve, _reject) => {
         try {
             console.log(data);
@@ -44,23 +44,20 @@ const saveProduct = (page, data, shopId) => {
                     }
                     return product;
                 });
-                const price: number = Number(productDetail.productPrice.split(',')[0])*1000;
+                const price: number = Number(productDetail.productPrice.split(',')[0]) * 1000;
                 const minimum: number = Number(productDetail.productMinimum.split(' ')[0]);
+                const category = await getCategory(cateName);
                 const product = {
                     name: productDetail.productName,
                     price: price,
                     minimum: minimum,
-                    category: {
-                        category_name: 'khanh',
-                        category_id: "1"
-                    },
+                    category: category,
                     shop_id: shopId,
                     depcription: productDetail.productDescription,
                     images: productDetail.images,
                 }
-                console.log(product);
-                // await wholeesaleProduct.create(product);
-                // }
+                await WholesaleProductModel.create(product);
+
 
             }
             resolve(1);
@@ -78,25 +75,61 @@ export const getUrlProduct = async (page, productUrl, shop) => {
     try {
 
         const shopId = `${Platforms.tts}.${shop}`;
-        let nextPage: string = productUrl;
-        while (nextPage) {
-            await page.goto(nextPage);
-            const data = await page.evaluate(() => {
-                const productSelector = document.querySelectorAll(".productName > a");
-                let productlinks = [];
-                productSelector.forEach(item => {
-                    productlinks.push(item.getAttribute('href'));
-                });
-                try {
-                    nextPage = document.querySelector(".page-item.active + li > a").getAttribute("href");
-                } catch (error) {
-                    nextPage = null;
-                }
-                return productlinks;
-
+        await page.goto(productUrl);
+        const productCategoriesData = await page.evaluate(() => {
+            const productCategories = document.querySelectorAll(".css-gk0dxy > .css-q2y3yl > a");
+            let categories = [];
+            productCategories.forEach(item => {
+                categories.push(item.getAttribute('href'));
             });
-            await saveProduct(page, data, shopId);
+            const productCategoriesName = document.querySelectorAll(".css-gk0dxy > .css-q2y3yl > a > span");
+            let categoriesName = [];
+            productCategoriesName.forEach(item => {
+                categoriesName.push(item.textContent);
+            });
+            const category = {
+                categories,
+                categoriesName
+            }
+            return category;
+
+
+        });
+        console.log(productCategoriesData);
+        for (let i = 0; i < productCategoriesData.categories.length; i++) {
+            let nextPage: string = `${TTS_API}${productCategoriesData.categories[i]}`;
+
+            while (nextPage) {
+                console.log('nextPage', nextPage);
+
+                await page.goto(nextPage);
+                const data = await page.evaluate(() => {
+                    let pageAfter;
+                    const productSelector = document.querySelectorAll(".productName > a");
+                    let productlinks = [];
+                    productSelector.forEach(item => {
+                        productlinks.push(item.getAttribute('href'));
+                    });
+                    try {
+                        pageAfter = document.querySelector(".page-item.active + li > a").getAttribute("href");
+                    } catch (error) {
+                        console.log(error);
+
+                    }
+                
+                    const data = {
+                        productlinks,
+                        pageAfter
+                    }
+                    return data
+
+                });
+                console.log('11111111111111111111111111111111111111111111111111111111111111111111', data.pageAfter);
+                nextPage = data.pageAfter ? `${TTS_API}${data.pageAfter}` : null;
+                await saveProduct(page, data.productlinks, shopId, productCategoriesData.categoriesName[i]);
+            }
         }
+
 
     } catch (error) {
         console.log(error);
