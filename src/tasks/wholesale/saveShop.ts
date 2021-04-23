@@ -1,8 +1,10 @@
-import WholesaleModel from '../../models/wholesale';
+import WholesaleModel from '../../models/wholesaleShop';
 import getLocationTTS from '../../untils/getLocationTTS';
 import filterEmails from '../../untils/emailFilter';
 import { Platforms } from '../../constants/common';
 export const createShop = async (data,phone) => {
+    console.log(8);
+    
     try {
         const address = await getLocationTTS(data.addressString);
         const emails = await filterEmails(data.shopDescription);

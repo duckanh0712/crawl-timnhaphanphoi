@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import { TTS_API } from '../../constants/api';
 import { Platforms } from '../../constants/common';
-import WholesaleModel from '../../models/wholesale';
+import WholesaleModel from '../../models/wholesaleShop';
 import { getUrlProduct } from '../../tasks/wholesale/saveProduct';
 import { createShop } from '../wholesale/saveShop';
 const loginTTS = async (page) => {
@@ -15,6 +15,8 @@ const loginTTS = async (page) => {
 }
 
 const getShop = async (browser, shopUrls) => {
+    console.log(7);
+    
     try {
         const page = await browser.newPage();
         for (let i = 0; i < shopUrls.length; i++) {
@@ -141,13 +143,13 @@ const getShop = async (browser, shopUrls) => {
                 });
                 const shop = await WholesaleModel.findById(`${Platforms.tts}.${getPhoneNumber}`);
                 if (!shop) {
-                await createShop(data, getPhoneNumber);
-                const productUrl = `${TTS_API}${data.productsShow}`;
+                    await createShop(data, getPhoneNumber);
+                    const productUrl = `${TTS_API}${data.productsShow}`;
 
-                await getUrlProduct(page, productUrl,getPhoneNumber)
+                    await getUrlProduct(page, productUrl, getPhoneNumber)
 
                 } else {
-                continue;
+                    continue;
                 }
 
             } catch (error) {
@@ -157,7 +159,7 @@ const getShop = async (browser, shopUrls) => {
 
 
         }
-        // page.close();
+        page.close();
     } catch (e) {
         console.log(e);
 
@@ -165,8 +167,10 @@ const getShop = async (browser, shopUrls) => {
 }
 
 
-export default () => {
-    const searchUrl = `https://thitruongsi.com/shop/search?keyword=vo%20soc%20cao%20co%20nam%20nu`;
+export default (searchUrl) => {
+    console.log(6);
+    
+    // const searchUrl = `https://thitruongsi.com/shop/search?keyword=vo%20soc%20cao%20co%20nam%20nu`;
     console.log(searchUrl);
     return new Promise(async (resolve, reject) => {
 
@@ -186,11 +190,11 @@ export default () => {
 
             const data = await page.evaluate(() => {
                 let shopsLinks = [];
-                // const shopsLink = document.querySelectorAll('.shop-item > a');
-                // shopsLink.forEach(item => {
-                //     shopsLinks.push(item.getAttribute("href"));
-                // });
-                shopsLinks.push(`/shop/xuong-chuyen-si-thoi-trang-thien-huu`);
+                const shopsLink = document.querySelectorAll('.shop-item > a');
+                shopsLink.forEach(item => {
+                    shopsLinks.push(item.getAttribute("href"));
+                });
+               
                 return shopsLinks;
 
             });
@@ -199,7 +203,8 @@ export default () => {
             await page.waitForNavigation({
                 waitUntil: 'networkidle0',
             });
-            await getShop(browser, data)
+            await getShop(browser, data);
+            await browser.close();
             resolve(1)
 
 

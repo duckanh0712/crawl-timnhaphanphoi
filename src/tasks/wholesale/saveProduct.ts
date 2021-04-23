@@ -5,6 +5,8 @@ import  { getCategory } from '../../untils/getCategory';
  
 
 const saveProduct = (page, data, shopId, cateName) => {
+    console.log(11);
+    
     return new Promise(async (resolve, _reject) => {
         try {
             console.log(data);
@@ -71,7 +73,8 @@ const saveProduct = (page, data, shopId, cateName) => {
 }
 
 export const getUrlProduct = async (page, productUrl, shop) => {
-
+    console.log(9);
+    
     try {
 
         const shopId = `${Platforms.tts}.${shop}`;

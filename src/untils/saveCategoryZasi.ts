@@ -5,19 +5,20 @@ export default async () => {
         const catApi = `https://dev.api.zasi.vn/v1/product/category`;
         const responseCat = await axios.get(catApi);
         const categorires = responseCat.data.categories;
-        for (let i = 0; i < categorires.length; i++) {
-            if (categorires[i].level == 3) {
+        let cate = categorires.shift();
+        while (cate) {
+            if (cate.level == 3) {
                 const category = {
-                    _id: Number(categorires[i].id),
-                    parent_id: Number(categorires[i].parentId),
-                    level: Number(categorires[i].level),
-                    sort: Number(categorires[i].sort),
-                    name: categorires[i].name,
+                    _id: Number(cate.id),
+                    parent_id: Number(cate.parentId),
+                    level: Number(cate.level),
+                    sort: Number(cate.sort),
+                    name: cate.name,
                 }
-                console.log(categorires[i].name);
+                console.log(cate.name);
                 await ZasiCategoriesmodel.create(category);
             }
-
+            cate = categorires.shift();
         }
 
     } catch (error) {

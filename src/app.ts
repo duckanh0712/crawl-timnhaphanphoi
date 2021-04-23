@@ -21,7 +21,8 @@ mongoose.connection.once('open', () => {
     
 })
 
-
+import crawl from './tasks/index';
+crawl();
 // import { getUrlCategories } from './tasks/distributors';
 // try{
 //     getUrlCategories();
@@ -31,8 +32,8 @@ mongoose.connection.once('open', () => {
 // }
 // import thitruonsi from './tasks/wholesale/index';
 // thitruonsi();
-import {getCategory} from './untils/getCategory';
-getCategory(`Giày Dép - Túi Xách`);
+// import {getCategory} from './untils/getCategory';
+// getCategory(`Giày Dép - Túi Xách`);
 
 
 

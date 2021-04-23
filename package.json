@@ -22,6 +22,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "mongoose": "^5.12.1",
-    "puppeteer": "^8.0.0"
+    "puppeteer": "^8.0.0",
+    "xml-flow": "^1.0.4"
   }
 }
