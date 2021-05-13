@@ -1,16 +1,15 @@
 import { TTS_API } from '../../constants/api';
 import WholesaleProductModel from '../../models/wholeesaleProduct';
 import { Platforms } from '../../constants/common';
-import  { getCategory } from '../../untils/getCategory';
- 
+import  { getCategory } from '../../utils/getCategory';
+import WholesaleShopModel from '../../models/wholesaleShop';
 
 const saveProduct = (page, data, shopId, cateName) => {
     console.log(11);
     
     return new Promise(async (resolve, _reject) => {
         try {
-            console.log(data);
-
+            
             for (let i = 0; i < data.length; i++) {
                 const url: string = `${TTS_API}${data[i]}`;
                 await page.goto(url);
@@ -46,7 +45,11 @@ const saveProduct = (page, data, shopId, cateName) => {
                     }
                     return product;
                 });
-                const price: number = Number(productDetail.productPrice.split(',')[0]) * 1000;
+                let price: number = Number(productDetail.productPrice.split(',')[0]) * 1000;
+                if(!price) {
+                    price = 5000;
+                    
+                }
                 const minimum: number = Number(productDetail.productMinimum.split(' ')[0]);
                 const category = await getCategory(cateName);
                 const product = {
@@ -57,11 +60,12 @@ const saveProduct = (page, data, shopId, cateName) => {
                     shop_id: shopId,
                     depcription: productDetail.productDescription,
                     images: productDetail.images,
+                    link: url
                 }
                 await WholesaleProductModel.create(product);
-
-
             }
+            const products = await WholesaleProductModel.find({shop_id: shopId });
+            await WholesaleShopModel.updateOne({_id: shopId },{ product_crawled: products.length });
             resolve(1);
 
         } catch (error) {
@@ -69,7 +73,6 @@ const saveProduct = (page, data, shopId, cateName) => {
 
         }
     });
-
 }
 
 export const getUrlProduct = async (page, productUrl, shop) => {
@@ -127,7 +130,6 @@ export const getUrlProduct = async (page, productUrl, shop) => {
                     return data
 
                 });
-                console.log('11111111111111111111111111111111111111111111111111111111111111111111', data.pageAfter);
                 nextPage = data.pageAfter ? `${TTS_API}${data.pageAfter}` : null;
                 await saveProduct(page, data.productlinks, shopId, productCategoriesData.categoriesName[i]);
             }

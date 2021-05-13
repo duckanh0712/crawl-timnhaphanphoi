@@ -137,10 +137,15 @@ const getShop = async (browser, shopUrls) => {
                 await page.waitForSelector('textarea', { visible: true });
                 const getPhoneNumber = await page.evaluate(() => {
 
-                    const phoneNumber = document.querySelector('textarea').textContent;
-
-                    return phoneNumber
+                    const phoneNumber = document.querySelectorAll('textarea');
+                    let images = [];
+                    phoneNumber.forEach(item => {
+                        images.push(item.textContent);
+                    });
+                    return images
                 });
+                console.log('=======================',getPhoneNumber);
+                
                 const shop = await WholesaleModel.findById(`${Platforms.tts}.${getPhoneNumber}`);
                 if (!shop) {
                     await createShop(data, getPhoneNumber);
@@ -169,8 +174,6 @@ const getShop = async (browser, shopUrls) => {
 
 export default (searchUrl) => {
     console.log(6);
-    
-    // const searchUrl = `https://thitruongsi.com/shop/search?keyword=vo%20soc%20cao%20co%20nam%20nu`;
     console.log(searchUrl);
     return new Promise(async (resolve, reject) => {
 
@@ -190,10 +193,11 @@ export default (searchUrl) => {
 
             const data = await page.evaluate(() => {
                 let shopsLinks = [];
-                const shopsLink = document.querySelectorAll('.shop-item > a');
-                shopsLink.forEach(item => {
-                    shopsLinks.push(item.getAttribute("href"));
-                });
+                shopsLinks.push(`/shop/nice-house`)
+                // const shopsLink = document.querySelectorAll('.shop-item > a');
+                // shopsLink.forEach(item => {
+                //     shopsLinks.push(item.getAttribute("href"));
+                // });
                
                 return shopsLinks;
 

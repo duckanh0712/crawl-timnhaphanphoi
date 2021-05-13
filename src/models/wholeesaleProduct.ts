@@ -12,7 +12,9 @@ const WholesaleProductSchema: Schema = new mongoose.Schema(
         category: {
             category_name: String,
             category_id: Number
-        }
+        },
+        link: String,
+        depcription: String
 
 
 

@@ -14,12 +14,12 @@ const mongoSettings = {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }
-mongoose.connect(process.env.MONGODB_URI, mongoSettings);
-mongoose.Promise = global.Promise;
-mongoose.connection.once('open', () => {
-    console.log('Connected to MongoDB!');
+// mongoose.connect(process.env.MONGODB_URI, mongoSettings);
+// mongoose.Promise = global.Promise;
+// mongoose.connection.once('open', () => {
+//     console.log('Connected to MongoDB!');
     
-})
+// })
 
 import crawl from './tasks/index';
 crawl();
@@ -34,6 +34,8 @@ crawl();
 // thitruonsi();
 // import {getCategory} from './untils/getCategory';
 // getCategory(`Giày Dép - Túi Xách`);
+
+
 
 
 

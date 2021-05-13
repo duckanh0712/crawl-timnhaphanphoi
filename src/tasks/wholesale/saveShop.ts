@@ -1,6 +1,6 @@
 import WholesaleModel from '../../models/wholesaleShop';
-import getLocationTTS from '../../untils/getLocationTTS';
-import filterEmails from '../../untils/emailFilter';
+import getLocationTTS from '../../utils/getLocationTTS';
+import filterEmails from '../../utils/emailFilter';
 import { Platforms } from '../../constants/common';
 export const createShop = async (data,phone) => {
     console.log(8);
@@ -20,6 +20,7 @@ export const createShop = async (data,phone) => {
             sort_description: data.description,
             views: data.shopViews,
             followers: data.shopfollowers,
+            product_crawler: 0,
             product_total: data.products,
             operation_time: data.operationTime,
             businessType: !data.businessType ? null : data.businessType,

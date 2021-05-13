@@ -1,6 +1,6 @@
 import DistributorModel from '../../models/distributors';
-import filterUrl from '../../untils/urlFilter';
-import filterEmail from '../../untils/emailFilter';
+import filterUrl from '../../utils/urlFilter';
+import filterEmail from '../../utils/emailFilter';
 import { TIMNHAPHANPHOI_API } from '../../constants/api';
 import { Platforms } from '../../constants/common';
 import e from 'express';
