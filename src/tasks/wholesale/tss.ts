@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 
 export default () => {
 
-    const searchUrl = `https://thitruongsi.com/quan-the-thao-cau-long-nam-vina-authentic-qvn08-1845869.html`;
+    const searchUrl = `https://thitruongsi.com/dau-phong-muoi-lot-v-tan-tan-lon-125g-540923.html`;
     console.log(searchUrl);
     return new Promise(async (resolve, reject) => {
 
@@ -24,12 +24,17 @@ export default () => {
                 const productName = document.querySelector("h1").textContent;
                 const productMinimum = document.querySelector(".css-4bsvdr > div > strong").textContent;
                 let productImages = document.querySelectorAll(".jsx-929251746.css-whm7bm > div > div > div > img");
-                const productDescription = document.querySelector(".tab-pane.active >.css-52n5xd").textContent;
-
+                const productDescriptions = document.querySelectorAll(".tab-pane.active >.css-52n5xd > p");
+                const cateQuyery = document.querySelectorAll(".breadcrumb-item");
+                const categoryName = cateQuyery[2].textContent;
                 let images = [];
                 productImages.forEach(item => {
                     images.push(item.getAttribute("src"));
                 });
+                let productDescription = "";
+                productDescriptions.forEach(item => {
+                    productDescription = (`${productDescription}${item.textContent}\n`)
+                })
                 try {
                     productPrices = document.querySelectorAll(".jsx-1704392005.multiple-price");
                     productNumbers = document.querySelectorAll(" .jsx-1704392005.font-90");
@@ -38,8 +43,6 @@ export default () => {
                         try {
                             let temptNumbers = productNumbers[index].textContent.split(' ')[0];
                             if (isNaN(temptNumbers) == true) {
-
-
                                 temptNumbers = productNumbers[index].textContent.split(' ')[1];
                             }
                             temptPrices = productPrices[index].textContent.split(',');
@@ -47,10 +50,11 @@ export default () => {
                             if (temptPrices.length > 2) {
                                 priceTmp = Number(`${temptPrices[0]}${temptPrices[1]}`) * 1000;
                             } else if (temptPrices.length == 1) {
-                                priceTmp = 1;
+                                priceTmp = Number(temptPrices[0].split('đ')[0]);
+
                             }
                             price = {
-                                number: Number(temptNumbers),
+                                number: Number(temptNumbers) >= 2 ? Number(temptNumbers) : 2,
                                 price: priceTmp
                             }
                         } catch (error) {
@@ -71,14 +75,17 @@ export default () => {
                 if (prices.length < 1) {
                     const productPrice = document.querySelector(".jsx-1922897821.single-price").textContent;
                     const priceArr = productPrice.split(',');
-                    let priceTmp = Number(priceArr[0]) * 1000
+                    let priceTmp: number;
                     if (priceArr.length == 1) {
-                        priceTmp = 1
-                    } else if (priceArr.length > 2) {
+                        priceTmp = Number(priceArr[0].split('đ')[0]);
+                    }
+                    else if (priceArr.length == 2) {
+                        priceTmp = Number(priceArr[0]) * 1000
+                    } else if (priceArr.length >= 3) {
                         priceTmp = Number(`${priceArr[0]}${priceArr[1]}`) * 1000;
                     }
                     const price = {
-                        number: Number(productMinimum.split(' ')[0]),
+                        number: Number(productMinimum.split(' ')[0]) >= 2 ? Number(productMinimum.split(' ')[0]) : 2,
                         price: priceTmp
                     }
                     prices.push(price);
@@ -101,10 +108,10 @@ export default () => {
                             if (temptPrices.length > 2) {
                                 priceTmp = Number(`${temptPrices[0]}${temptPrices[1]}`) * 1000;
                             } else if (temptPrices.length == 1) {
-                                priceTmp = 1;
+                                priceTmp = Number(temptPrices[0].split('đ')[0]);
                             }
                             price = {
-                                number: Number(temptNumbers),
+                                number: Number(temptNumbers) >= 2 ? Number(temptNumbers) : 2,
                                 price: priceTmp
                             }
                         } catch (error) {
@@ -132,13 +139,15 @@ export default () => {
                     prices,
                     productMinimum,
                     images,
-                    productDescription
+                    productDescription,
+                    categoryName,
+
                 }
                 return product;
             });
 
 
-            console.log(productDetail.prices);
+            console.log(productDetail);
 
             resolve(1)
 
