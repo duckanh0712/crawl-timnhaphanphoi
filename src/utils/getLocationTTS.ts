@@ -39,7 +39,7 @@ export default async (place) => {
             },
             address_detail: address_detail
         }
-        // console.log(address);
+        console.log(address);
         
         return address;
 

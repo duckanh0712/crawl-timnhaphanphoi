@@ -4,6 +4,8 @@ import { sleep } from '../utils/common';
 import  { downloadSitemapShop }  from '../tasks/wholesale/dowloadSitemapShop';
 import saveCatZS from '../utils/saveCategoryZasi';
 import tss from './wholesale/tss';
+import {tesst} from '../tasks/wholesale/index';
+import { downloadSitemapShopSendo, crawlShopTmp } from '../tasks/sendos/index';
 export const rootPath: string = process.cwd();
 export const sitemapPath = path.join(rootPath, 'sitemaps')
 export default async () => {
@@ -23,8 +25,10 @@ export default async () => {
     try {
         // await saveCatZS();
         // await downloadSitemapShop();
-        await tss();
-        
+        // await tss();
+        // await tesst();
+        // await downloadSitemapShopSendo();
+        await crawlShopTmp()
     } catch (e) {
         console.log(e);
 

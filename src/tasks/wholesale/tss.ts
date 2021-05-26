@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 
 export default () => {
 
-    const searchUrl = `https://thitruongsi.com/dau-phong-muoi-lot-v-tan-tan-lon-125g-540923.html`;
+    const searchUrl = `https://thitruongsi.com/keo-chuoi-vi-cay-tui-5kg-1149846.html`;
     console.log(searchUrl);
     return new Promise(async (resolve, reject) => {
 
