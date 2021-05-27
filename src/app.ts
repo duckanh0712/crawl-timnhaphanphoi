@@ -21,8 +21,10 @@ const mongoSettings = {
     
 // })
 
-import crawl from './tasks/index';
-crawl();
+import {getproduct} from './tasks/sendos/product'
+getproduct();
+// import crawl from './tasks/index';
+// crawl();
 // import { getUrlCategories } from './tasks/distributors';
 // try{
 //     getUrlCategories();

@@ -17,6 +17,7 @@ import { getFileStat } from '../../utils/common';
 import RetryFileModel from '../../models/retryFile';
 import { Platforms } from '../../constants/common';
 import getLocationTTS from '../../utils/getLocationTTS';
+import { getProductsItem } from './product';
 
 const SENDO_HTTP = `https://www.sendo.vn`
 const crawlShopsPromise = (shopSitemapPath: string) => {
@@ -93,7 +94,24 @@ const convertShop = async (shopUsername, shopDetail) => {
     try {
         const add = shopDetail.shopAddress.split(',');
         const addString = `${add[3]},${add[4]}`
-        const address = await getLocationTTS(addString);
+        // const address = await getLocationTTS(addString);
+        const address_detail = 'Số 272 Phố Nguyễn Lân, Phường Phương Liệt, Quận Thanh Xuân, Thành phố Hà Nội';
+
+        const address = {
+            province: {
+                province_id: 24,
+                province_name: 'Thành phố Hà Nội'
+            },
+            district: {
+                district_id: 9,
+                district_name: 'Quận Thanh Xuân'
+            },
+            ward: {
+                ward_id: 123,
+                ward_name: 'Phường Phương Liệt'
+            },
+            address_detail: address_detail
+        }
         const shop = {
             _id: `${Platforms.sendo}.${shopDetail.shopPhone}`,
             username: shopDetail.shopPhone,
@@ -108,7 +126,7 @@ const convertShop = async (shopUsername, shopDetail) => {
             address: address
         }
         console.log(shop);
-        
+
     } catch (error) {
         console.log('can not creat shop by', error);
 
@@ -116,7 +134,7 @@ const convertShop = async (shopUsername, shopDetail) => {
 }
 
 export const crawlShopTmp = async () => {
-    const shopUsername = `truong-tuyet-mini-house`;
+    const shopUsername = `sinh-vat-canh-manh-hung`;
     return new Promise(async (resolve, reject) => {
         try {
             const browser = await puppeteer.launch({
@@ -137,8 +155,20 @@ export const crawlShopTmp = async () => {
 
                 const shopNameQuery = document.querySelector(".shop-summary-info__shop-name_20VH > div > span ").textContent;
                 const shopDetailQuerys = document.querySelectorAll(".textDesc_1ut7");
-                const shopAvatar = document.querySelector(".shop-summary-info__left_2eyn > img").getAttribute("src");
-                const shopCover = document.querySelector(".shop-cover_3xVE > img ").getAttribute("src");
+                let shopAvatar = "";
+                try {
+                     shopAvatar = document.querySelector(".shop-summary-info__left_2eyn > img").getAttribute("src");
+                } catch (error) {
+                    console.log(error);
+
+                }
+                let shopCover = "";
+                try {
+                    shopCover = document.querySelector(".shop-cover_3xVE > img ").getAttribute("src");
+                } catch (error) {
+                    console.log(error);
+
+                }
                 const shopDescription = document.querySelector(".slogan_3Zay > p").textContent;
                 const shopAddress = shopDetailQuerys[2].textContent;
                 const shopPhone = shopDetailQuerys[3].textContent;
@@ -151,14 +181,13 @@ export const crawlShopTmp = async () => {
                     shopDescription,
                     shopAvatar,
                     shopCover,
-
-                    
                 }
                 return data
             });
 
             console.log(data);
-            await convertShop(shopUsername,data);
+            await convertShop(shopUsername, data);
+            await getProductsItem(browser,shopUsername)
             resolve(1)
         } catch (e) {
 

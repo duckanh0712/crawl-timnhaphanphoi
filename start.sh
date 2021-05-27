@@ -6,5 +6,6 @@ export TIMNHAPHANPHOI_API=https://timnhaphanphoi.vn
 export TTS_API=https://thitruongsi.com
 export AUTO_INDEX=true
 export CHOZOI_API=https://api.chozoi.com
+export SENDO_HTTP=https://www.sendo.vn
 npm run dev
 # npm run start
