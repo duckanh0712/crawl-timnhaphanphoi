@@ -16,7 +16,7 @@ node {
         }
         stage ("pull code"){
 
-            sh "./start.sh"
+            sh "-S ./start.sh"
         }
 
     } catch (e) {
