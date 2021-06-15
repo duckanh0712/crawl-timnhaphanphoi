@@ -15,7 +15,7 @@ node {
             echo "push code da"
         }
            stage ("push docker-compose file"){
-            echo "push docker-compose file"
+            echo "push docker-compose Lon me jenkins"
         }
 
     } catch (e) {
