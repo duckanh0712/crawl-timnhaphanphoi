@@ -16,7 +16,7 @@ node {
         }
         stage ("pull code"){
 
-            sh "pm2 restart prod-start.sh"
+            sh "./start.sh"
         }
 
     } catch (e) {
