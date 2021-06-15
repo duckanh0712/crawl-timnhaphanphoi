@@ -5,7 +5,19 @@ node {
 
     try {
 
-        
+        stage ("checkout code"){
+            echo "checkout code da"
+        }
+           stage ("build"){
+            echo " build code da"
+        }
+           stage ("push code"){
+            echo "push code da"
+        }
+           stage ("push docker-compose file"){
+            echo "push docker-compose file"
+        }
+
     } catch (e) {
       
         throw e
