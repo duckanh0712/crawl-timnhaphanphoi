@@ -92,11 +92,10 @@ const crawlShop = async (shopQueue) => {
 
 const convertShop = async (shopUsername, shopDetail) => {
     try {
-        const add = shopDetail.shopAddress.split(',');
-        const addString = `${add[3]},${add[4]}`
+        const add = shopDetail.shopAddress.split(',').slice(-2);
+        const addString = `${add[0]},${add[1]}`
         // const address = await getLocationTTS(addString);
         const address_detail = 'Số 272 Phố Nguyễn Lân, Phường Phương Liệt, Quận Thanh Xuân, Thành phố Hà Nội';
-
         const address = {
             province: {
                 province_id: 24,
@@ -125,7 +124,8 @@ const convertShop = async (shopUsername, shopDetail) => {
             platforms: `${Platforms.sendo}`,
             address: address
         }
-        console.log(shop);
+        console.log(shop,addString);
+        await SendoShopModel.create(shop);
 
     } catch (error) {
         console.log('can not creat shop by', error);
@@ -157,7 +157,7 @@ export const crawlShopTmp = async () => {
                 const shopDetailQuerys = document.querySelectorAll(".textDesc_1ut7");
                 let shopAvatar = "";
                 try {
-                     shopAvatar = document.querySelector(".shop-summary-info__left_2eyn > img").getAttribute("src");
+                    shopAvatar = document.querySelector(".shop-summary-info__left_2eyn > img").getAttribute("src");
                 } catch (error) {
                     console.log(error);
 
@@ -187,7 +187,7 @@ export const crawlShopTmp = async () => {
 
             console.log(data);
             await convertShop(shopUsername, data);
-            await getProductsItem(browser,shopUsername)
+            await getProductsItem(browser, shopUsername)
             resolve(1)
         } catch (e) {
 

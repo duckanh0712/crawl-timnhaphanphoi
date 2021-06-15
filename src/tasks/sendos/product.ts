@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { SENDO_HTTP } from '../../constants/api';
-async function autoScroll(page) {
+ async function autoScroll(page) {
     try {
         await page.evaluate(async () => {
             await new Promise((resolve, _reject) => {
@@ -18,7 +18,7 @@ async function autoScroll(page) {
             });
         });
     } catch (error) {
-        
+
         console.log(error);
 
     }
@@ -42,7 +42,13 @@ export const getProductDetail = async (browser, productUrls: string[]) => {
 }
 
 export const getproduct = async () => {
-    const url = `${SENDO_HTTP}/cay-si-ro-giong-27980543.html?source_block_id=search_products&source_info=desktop2_60___session_key___ac9eebc7-8238-42d1-b359-7cd75102eb44_0_algo6_0_181_0_-1&source_page_id=search_rank`
+// const a =`https://www.sendo.vn/quan-short-nam-levi-cha-t-luo-ng-khong-xuo-ng-ma-u-jn235d-10803701.html`;
+// const productIdTmp = new URL(a);
+// const productId = productIdTmp.pathname.split("-")[productIdTmp.pathname.split("-").length-1].split(".")[0];
+// console.log(productId);
+
+// return
+    const url = `${SENDO_HTTP}/khoi-pin-lithium-48v-12ah-cho-xe-dien-luu-tru-dien-thay-binh-acquy-32087979.html`;
     try {
         const browser = await puppeteer.launch({
             headless: false,
@@ -53,13 +59,42 @@ export const getproduct = async () => {
         });
         const page = await browser.newPage();
         await page.goto(url);
+        await autoScroll(page);
         const data = await page.evaluate(() => {
+            const productCateQuery = document.querySelectorAll(".item_1WT2")
+            const productName = document.querySelector(".productName_3Cdc").textContent;
+            const price = document.querySelector(".currentPrice_2zpf").textContent.split('đ')[0].replace('.', '').replace(".","");
+            const imageProductsQuery = document.querySelectorAll(".item_R9_c.thumb_T50V > img");
+            let images = [];
+            imageProductsQuery.forEach(item => {
+                images.push(item.getAttribute("data-src").replace("50x50","500x500").slice(2));
+            });
+            let productDes = document.querySelectorAll(".details-block > div > div , .details-block > div > div > div > div ");
+            if(productDes.length == 0) {
+                productDes = document.querySelectorAll(".details-block > div > p");
+            }
+            let cate = [];
+            productCateQuery.forEach( item => {
+                cate.push(item.textContent);
+            });
+            let des = "";
+            productDes.forEach( item => {
+                des = `${des}/n${item.textContent}`;
+            });
             const data = {
-
+                productName,
+                price,
+                des,
+                images,
+                category: cate.slice(-1)[0]
             }
             return data;
+
         });
+        console.log(data);
+
     } catch (error) {
+        console.log(error);
 
     }
 

@@ -20,6 +20,8 @@ const mongoSettings = {
 //     console.log('Connected to MongoDB!');
     
 // })
+// import {getCategories} from './tasks/sendos/getCategories'
+// getCategories();
 
 import {getproduct} from './tasks/sendos/product'
 getproduct();

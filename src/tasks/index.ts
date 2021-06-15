@@ -7,7 +7,8 @@ import tss from './wholesale/tss';
 import {tesst} from '../tasks/wholesale/index';
 import { downloadSitemapShopSendo, crawlShopTmp } from '../tasks/sendos/index';
 export const rootPath: string = process.cwd();
-export const sitemapPath = path.join(rootPath, 'sitemaps')
+export const sitemapPath = path.join(rootPath, 'sitemaps');
+import { startBrowser } from '../tasks/sendos/getCategories';
 export default async () => {
 
     try {
@@ -23,12 +24,13 @@ export default async () => {
     await sleep(2000);
 
     try {
+        // await startBrowser();
         // await saveCatZS();
         // await downloadSitemapShop();
         // await tss();
         // await tesst();
         // await downloadSitemapShopSendo();
-        await crawlShopTmp()
+        await crawlShopTmp();
     } catch (e) {
         console.log(e);
 

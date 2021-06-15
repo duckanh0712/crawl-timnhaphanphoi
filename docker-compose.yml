@@ -6,7 +6,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: chozoi
       MONGO_INITDB_ROOT_PASSWORD: zoiohc
-      MONGODB_DATABASE: cz-crawl-html
+      MONGODB_DATABASE: cz-crawl-sendo
 
     ports:
       - "27017:27017"
