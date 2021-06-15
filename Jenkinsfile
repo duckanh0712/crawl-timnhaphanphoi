@@ -6,16 +6,16 @@ node {
     try {
 
         stage ("checkout code"){
-            echo "checkout code da"
+            sh "git checkout ${env.BRANCH_NAME} && git reset --hard origin/${env.BRANCH_NAME}"
+
         }
-           stage ("build"){
-            echo " build code da"
+        stage ("pull code"){
+
+            sh "git pull origin ${env.BRANCH_NAME}"
         }
-           stage ("push code"){
-            echo "push code da"
-        }
-           stage ("push docker-compose file"){
-            echo "push docker-compose Lon me jenkins"
+        stage ("pull code"){
+
+            sh "pm2 restart prod-start.sh"
         }
 
     } catch (e) {
