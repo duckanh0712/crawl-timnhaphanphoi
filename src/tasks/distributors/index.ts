@@ -98,7 +98,7 @@ export const getUrlDistributors = async (url,browser) => {
 export const getUrlCategories = async () => {
     try {
         const browser = await puppeteer.launch({
-            headless: false,
+            // headless: false,
 
         });
         const page = await browser.newPage();

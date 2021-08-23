@@ -19,21 +19,14 @@ const mongoSettings = {
 // mongoose.connection.once('open', () => {
 //     console.log('Connected to MongoDB!');
     
-// })
-// import {getCategories} from './tasks/sendos/getCategories'
-// getCategories();
 
-import {getproduct} from './tasks/sendos/product'
-getproduct();
-// import crawl from './tasks/index';
-// crawl();
-// import { getUrlCategories } from './tasks/distributors';
-// try{
-//     getUrlCategories();
-// }catch(e){
-//     console.log(e);
+import { getUrlCategories } from './tasks/distributors';
+try{
+    getUrlCategories();
+}catch(e){
+    console.log(e);
     
-// }
+}
 // import thitruonsi from './tasks/wholesale/index';
 // thitruonsi();
 // import {getCategory} from './untils/getCategory';
